@@ -1,6 +1,8 @@
 exports.InventoryPage = class InventoryPage {
 
   colTable1 = '//div[@class="inventory_item"]';
+  itemNameCol = '(//div[@class="inventory_item_name"])';
+  btnAddtoCart = '/../../../div[2]/button'
   
   constructor(page){
     this.page = page;
@@ -16,14 +18,24 @@ async selectRandomItem(){
   return  itemCount;
 }
 
-//This method is still under work
-// async searchAnItem(itemName){
-//   for(let i = 0 ; i < InventoryPageselectRandomItem() ; i++){
-//     if(this.page.locator(this.colTable1[i]) === itemName ){
-//       return 
-//     }
-//   }
-// }
+
+async searchAnItem(itemName){
+
+  await this.fullTable.waitFor({state: "visible"})
+  const itemCount =  await (this.colTable).count();
+
+  for(let i = 1 ; i < itemCount+1 ; i++){
+    if((await this.page.locator(this.itemNameCol+"["+i+"]").innerText()).valueOf() === itemName ){
+      console.log("This is the item "+ (await this.page.locator(this.itemNameCol+"["+i+"]").innerText()).valueOf())
+      await this.page.locator(this.itemNameCol+"["+i+"]"+this.btnAddtoCart).click()
+
+      if(  (await this.page.locator(this.itemNameCol+"["+i+"]"+this.btnAddtoCart).innerText()).valueOf() == "Remove"){
+        return true
+      }
+      
+    }
+  }
+}
    
    
 }
